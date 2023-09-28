@@ -51,6 +51,7 @@ class _HomePageState extends State<HomePage> {
                   subtitle: Text(item["description"]),
                   trailing: PopupMenuButton(onSelected: (value) {
                     if (value == 'edit') {
+                      navigateToEditPage(item);
                     } else if (value == 'delete') {
                       deleteById(id);
                     }
@@ -73,11 +74,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void navigateToAddPage() {
+  void navigateToEditPage(Map item) {
+    final route = MaterialPageRoute(
+      builder: (context) => AddTodoPage(
+        todo: item,
+      ),
+    );
+    Navigator.push(context, route);
+  }
+
+  Future<void> navigateToAddPage() async {
     final route = MaterialPageRoute(
       builder: (context) => AddTodoPage(),
     );
-    Navigator.push(context, route);
+    await Navigator.push(context, route);
+    setState(() {
+      isLoading = true;
+    });
+    fetchTodo();
   }
 
   Future<void> fetchTodo() async {
